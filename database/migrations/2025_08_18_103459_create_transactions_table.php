@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount');
             $table->decimal('rate');
-            $table->decimal('total')->virtual('rate*amount');
+            $table->decimal('total')->virtualAs('rate*amount');
             $table->enum('status',['Pending','Approve','Faild'])->default('Pending');
             $table->string('transactionId')->unique();
             $table->string('image');
+            $table->enum('type',['Card order','Deposit']);
             $table->unsignedBigInteger('bank_id');
             $table->unsignedBigInteger('user_id');
             $table->uuid('uuid')->unique();

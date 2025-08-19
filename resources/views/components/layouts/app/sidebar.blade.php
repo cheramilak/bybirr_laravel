@@ -17,7 +17,9 @@
                     <flux:navlist.item icon="user" :href="route('userManagment')" :current="request()->routeIs('userManagment')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
                     <flux:navlist.item icon="identification" :href="route('kycManagment')" :current="request()->routeIs('kycManagment')" wire:navigate>{{ __('KYc') }}</flux:navlist.item>
                     <flux:navlist.item icon="user" :href="route('adminBanks')" :current="request()->routeIs('adminBanks')" wire:navigate>{{ __('Bank') }}</flux:navlist.item>
-
+                    <flux:navlist.group expandable heading="Card" class="hidden lg:grid">
+                        <flux:navlist.item icon="credit-card" :href="route('admincardOrder')" :current="request()->routeIs('admincardOrder')" wire:navigate>{{ __('Orders') }}</flux:navlist.item>
+                    </flux:navlist.group>
                 </flux:navlist.group>
             </flux:navlist>
 

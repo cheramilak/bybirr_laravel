@@ -20,12 +20,12 @@ class CardController extends Controller
             'image' => 'required|image',
             'amount' => 'required|numeric',
             'bankId' => 'required|integer',
-            'transactionId' => 'required|string',
+            'transactionId' => 'required|string|unique:transactions,transactionId',
         ]);
 
         if($validation->fails())
         {
-            return $this->validationError($validation->error()->first());
+            return $this->validationError($validation->errors()->first());
         }
         $transaction = new Transaction();
         $transaction->amount = $request->amount;
@@ -36,16 +36,17 @@ class CardController extends Controller
         $transaction->bank_id = $request->bankId;
         $transaction->uuid = Str::uuid();
         $transaction->status = 'Pending';
+        $transaction->type = 'Card order';
         $transaction->save();
+
 
         $cardOrder = new CardOrder();
         $cardOrder->transaction_id = $transaction->id;
         $cardOrder->user_id = Auth::user()->id;
-        $cardOrder->kyc_id = KYC::where('user_id',Auth::user()->id)->first();
+        $cardOrder->kyc_id = KYC::where('user_id',Auth::user()->id)->first()->id;
         $cardOrder->status = 'Pending';
         $cardOrder->uuid = Str::uuid();
         $cardOrder->save();
-
         return $this->success(null,);
     }
 }

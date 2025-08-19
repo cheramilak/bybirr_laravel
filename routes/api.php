@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\AuthController;
+use App\Http\Controllers\Api\v1\CardController;
 use App\Http\Controllers\Api\v1\KycController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,11 @@ Route::controller(AuthController::class)->prefix('auth/')->group(function (){
 Route::middleware('auth:sanctum')->group(function (){
     Route::controller(KycController::class)->group(function (){
         route::post('set-kyc','store');
+    });
+});
+
+Route::middleware('auth:sanctum')->prefix('card/')->group(function (){
+    Route::controller(CardController::class)->group(function (){
+        route::post('order-card','ordercard');
     });
 });
