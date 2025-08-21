@@ -1,7 +1,7 @@
 <div>
     <div class="flex-1 self-stretch max-md:pt-6">
-        <flux:heading>{{ 'Kyc' }}</flux:heading>
-        <flux:subheading>{{ 'Kyc Detail' }}</flux:subheading>
+        <flux:heading>{{ 'card Order' }}</flux:heading>
+        <flux:subheading>{{ 'Card Order Detail' }}</flux:subheading>
         <div class="flex mt-2">
             <div class="w-100 max-w">
             </div>
@@ -150,6 +150,23 @@
                     <span class="block text-xs text-slate-400">Status:</span>
                     <flux:badge color="{{ $cardOrder->transaction->status == 'Approve' ? 'lime' : 'red' }}">
                                         {{ $cardOrder->transaction->status  }}</flux:badge>
+                </div>
+
+                <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
+                    <span class="block text-xs text-slate-400">Order status:</span>
+                    <flux:badge color="{{ $cardOrder->status == 'Approve' ? 'lime' : 'red' }}">
+                                        {{ $cardOrder->status  }}</flux:badge>
+                </div>
+
+                @if ($cardOrder->status != 'Approve')
+                    <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
+                        <flux:button wire:click='create' variant="primary">Create Card
+                        </flux:button>
+                    </div>
+                @endif
+                <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
+                        <flux:button wire:click='create' variant="primary">Create Card
+                        </flux:button>
                 </div>
             </div>
         </div>

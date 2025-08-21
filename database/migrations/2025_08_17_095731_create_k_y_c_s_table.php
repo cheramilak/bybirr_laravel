@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('k_y_c_s', function (Blueprint $table) {
             $table->id();
-             $table->string('fName');
+            $table->string('fName');
             $table->string('lName');
             $table->string('country')->default('Ethiopia');
             $table->string('idType')->default('PASSPORT');
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('idBack');
             $table->string('email')->unique();
             $table->date('bod');
-            $table->enum('status',['Pending','Approved','Failed'])->default('Pending');
+            $table->enum('status', ['Pending', 'Approved', 'Failed'])->default('Pending');
             $table->unsignedBigInteger('user_id');
             $table->string('reason')->nullable();
             $table->uuid('uuid')->unique();

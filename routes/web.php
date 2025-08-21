@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admin\BankManagment;
+use App\Livewire\Admin\Card\CardManagment;
 use App\Livewire\Admin\Card\CardOrderDetail;
 use App\Livewire\Admin\Card\CardOrderManagment;
 use App\Livewire\Admin\KycDetail;
@@ -28,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     //cards
     Route::get('card-orders',CardOrderManagment::class)->name('admincardOrder');
     Route::get('card-order/{uuid}',CardOrderDetail::class)->name('adminCardOrderDetail');
+    Route::get('cards',CardManagment::class)->name('adminCards');
     Route::redirect('settings', 'settings/profile');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');

@@ -59,7 +59,12 @@ class User extends Authenticatable
         return Str::of($this->first_name)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function kyc()
+    {
+        return $this->hasOne(KYC::class, 'user_id');
     }
 }
