@@ -20,16 +20,16 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('users',UserManagment::class)->name('userManagment');
-    Route::get('kyc',KycManagment::class)->name('kycManagment');
-    route::get('kyc-detail/{uuid}',KycDetail::class)->name('kycDetail');
+    Route::get('users', UserManagment::class)->name('userManagment');
+    Route::get('kyc', KycManagment::class)->name('kycManagment');
+    route::get('kyc-detail/{uuid}', KycDetail::class)->name('kycDetail');
 
-    route::get('banks',BankManagment::class)->name('adminBanks');
+    route::get('banks', BankManagment::class)->name('adminBanks');
 
     //cards
-    Route::get('card-orders',CardOrderManagment::class)->name('admincardOrder');
-    Route::get('card-order/{uuid}',CardOrderDetail::class)->name('adminCardOrderDetail');
-    Route::get('cards',CardManagment::class)->name('adminCards');
+    Route::get('card-orders', CardOrderManagment::class)->name('admincardOrder');
+    Route::get('card-order/{uuid}', CardOrderDetail::class)->name('adminCardOrderDetail');
+    Route::get('cards', CardManagment::class)->name('adminCards');
     Route::redirect('settings', 'settings/profile');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
@@ -37,4 +37,4 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

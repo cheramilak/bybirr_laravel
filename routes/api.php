@@ -29,6 +29,7 @@ Route::prefix('v1/')->group(function () {
     Route::middleware('auth:sanctum')->prefix('card/')->group(function () {
         Route::controller(CardController::class)->group(function () {
             route::post('order-card', 'ordercard');
+            route::get('getCurrentRate', 'getCurrentRate');
         });
     });
 });
