@@ -83,9 +83,9 @@ class WebhookController extends Controller
 
     protected function topupCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -97,9 +97,9 @@ class WebhookController extends Controller
 
     protected function debitCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -111,9 +111,9 @@ class WebhookController extends Controller
 
     protected function withdrawalCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -125,9 +125,9 @@ class WebhookController extends Controller
 
     protected function failedWithdrawalCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -139,9 +139,9 @@ class WebhookController extends Controller
 
     protected function reversedCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -153,9 +153,9 @@ class WebhookController extends Controller
 
     protected function declinedCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
@@ -167,9 +167,9 @@ class WebhookController extends Controller
 
     protected function authorizationFailedCard(array $data)
     {
-        $tran = new CardTransaction();
+        $tran = CardTransaction::where('transactionId', $data['id'])->first() ?? new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->status = $data['status'];
+        $tran->status = $data['status'] ?? 'Processing';
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
