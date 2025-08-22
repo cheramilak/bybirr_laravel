@@ -62,7 +62,7 @@
                                     {{ $item->phone }}
                                 </th>
                                 <td class="px-6 py-4">
-                                    <flux:badge color="{{ $item->status == 'Active' ? 'lime' : 'red' }}">
+                                    <flux:badge color="{{ $item->status == 'Approved' ? 'lime' : 'red' }}">
                                         {{ $item->status }}</flux:badge>
                                 </td>
                                 <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -70,9 +70,9 @@
                                 </th>
 
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('kycDetail',$item->uuid) }}"
+                                    <a href="{{ route('kycDetail', $item->uuid) }}"
                                         class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                                       <flux:button  variant="primary">Detail</flux:button>
+                                        <flux:button variant="primary">Detail</flux:button>
                                     </a>
                                 </td>
                             </tr>

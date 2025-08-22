@@ -84,7 +84,7 @@ class AuthController extends Controller
 
     public function getUserProfile()
     {
-        $user = User::with(['kyc'])->find(Auth::user()->id);
+        $user = User::with(['kyc', 'cards'])->find(Auth::user()->id);
         $data = [
             'user' => $user
         ];

@@ -16,10 +16,16 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('card_number')->unique();
             $table->string('cardholder_name');
-            $table->string('expiration_date'); // MM/YY format
+            $table->string('valid'); // MM/YY format
             $table->string('cvv');
             $table->decimal('balance', 10, 2)->default(0.00);
-            $table->enum('status', ['Active', 'Inactive', 'Blocked'])->default('Active');
+            $table->string('status');
+            $table->date('expiry_date');
+            $table->string('cardUserId');
+            $table->string('customerId');
+            $table->string('cardId');
+            $table->json('billing_address')->nullable();
+            $table->string('last4')->nullable();
             $table->uuid('uuid')->unique();
             $table->timestamps();
         });

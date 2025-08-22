@@ -77,7 +77,7 @@
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Status:</span>
                     <flux:badge color="{{ $cardOrder->kyc->status == 'Active' ? 'lime' : 'red' }}">
-                                        {{ $cardOrder->kyc->status  }}</flux:badge>
+                        {{ $cardOrder->kyc->status }}</flux:badge>
                 </div>
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Photo:</span>
@@ -102,7 +102,8 @@
             class="max-w p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
             <flux:icon.document-currency-dollar class="size-12" />
             <a href="#">
-                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Transaction detail</h5>
+                <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Transaction detail
+                </h5>
             </a>
             <br>
             <div class="grid grid-flow-dense grid-cols-12 gap-4">
@@ -115,17 +116,17 @@
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Amount:</span>
                     <span
-                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->amount ?? 0,2) }}</span>
+                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->amount ?? 0, 2) }}</span>
                 </div>
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Rate:</span>
                     <span
-                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->rate ?? 0,2) }}</span>
+                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->rate ?? 0, 2) }}</span>
                 </div>
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Total:</span>
                     <span
-                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->total ?? 0,2) }}</span>
+                        class="block text-sm mt-1 text-slate-600 dark:text-slate-200">{{ number_format($cardOrder->transaction->total ?? 0, 2) }}</span>
                 </div>
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Bank Id:</span>
@@ -149,25 +150,29 @@
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Status:</span>
                     <flux:badge color="{{ $cardOrder->transaction->status == 'Approve' ? 'lime' : 'red' }}">
-                                        {{ $cardOrder->transaction->status  }}</flux:badge>
+                        {{ $cardOrder->transaction->status }}</flux:badge>
                 </div>
 
                 <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                     <span class="block text-xs text-slate-400">Order status:</span>
-                    <flux:badge color="{{ $cardOrder->status == 'Approve' ? 'lime' : 'red' }}">
-                                        {{ $cardOrder->status  }}</flux:badge>
+                    <flux:badge color="lime">
+                        {{ $cardOrder->status }}
+                    </flux:badge>
                 </div>
 
-                @if ($cardOrder->status != 'Approve')
+                @if ($cardOrder->status != 'Pending')
                     <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <flux:button wire:click='create' variant="primary">Create Card
                         </flux:button>
                     </div>
                 @endif
-                <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
-                        <flux:button wire:click='create' variant="primary">Create Card
+                @if ($cardOrder->status != 'Success')
+                    <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
+                        <flux:button wire:click='ComplateCard' variant="primary">Submit Card data
                         </flux:button>
-                </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>

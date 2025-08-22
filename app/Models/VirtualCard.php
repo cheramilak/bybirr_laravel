@@ -11,17 +11,23 @@ class VirtualCard extends Model
         'user_id',
         'card_number',
         'cardholder_name',
-        'expiration_date',
+        'valid',
         'cvv',
         'balance',
         'uuid',
         'status',
+        'expiry_date',
+        'cardUserId',
+        'customerId',
+        'cardId',
+        'billing_address',
+        'last4'
     ];
 
     // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Encrypt card_number

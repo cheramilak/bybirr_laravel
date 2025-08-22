@@ -14,7 +14,7 @@ class KycService
     public function __construct($kyc)
     {
         $this->kyc = $kyc;
-        $this->key = config('bitNob.test.screat');
+        $this->key = config('bitNob.test.api_secret');
     }
 
     public  function addKyc()
@@ -38,10 +38,27 @@ class KycService
         ];
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$this->key,
+            'Authorization' => 'Bearer ' . $this->key,
             'content-type: application/json',
             'accept: application/json'
-        ])->post('https://sandboxapi.bitnob.co/api/v1/virtualcards/registercarduser', $this->data);
-        return $response;
+        ])->post('https://sandboxapi.bitnob.co/api/v1/virtualcards/registercarduser', $data);
+        if ($response->successful()) {
+            $result = $response->json();  // Associative array
+            // return $result['data'];    // Or whatever key you're looking for
+            $data = [
+                'status' => true,
+                'customerId' => $result['data']['customerId'] ?? null,
+                'message' => $result['message'] ?? null
+            ];
+            return $data;
+        } else {
+            // Handle error response
+            $data = [
+                'status' => false,
+                'message' => $response->json()['message'] ?? 'Unknown error occurred'
+            ];
+            return $data;
+        }
+        // return $response;
     }
 }

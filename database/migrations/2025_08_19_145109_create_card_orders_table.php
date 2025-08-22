@@ -16,7 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('kyc_id');
             $table->foreignId('transaction_id')->constrained('transactions')->cascadeOnDelete();
-            $table->enum('status',['Pending','Approve','Faild'])->default('Pending');
+            $table->enum('status', ['Pending', 'Completed', 'In Progress', 'Success', 'Failed'])->default('Pending');
+            $table->string('reason')->nullable();
+            $table->string('cardId')->nullable();
             $table->uuid('uuid')->unique();
             $table->timestamps();
         });

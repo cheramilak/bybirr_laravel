@@ -10,6 +10,7 @@ use App\Models\Bank;
 use App\Models\CardOrder;
 use App\Models\KYC;
 use App\Models\TransactionRate;
+use App\Models\VirtualCard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -64,5 +65,15 @@ class CardController extends Controller
         $cardOrder->uuid = Str::uuid();
         $cardOrder->save();
         return $this->success(null,);
+    }
+
+    public function getCards()
+    {
+        $cards = VirtualCard::where('user_id', Auth::user()->id)->get();
+
+        $data = [
+            'cards' => $cards
+        ];
+        return $this->success($data);
     }
 }

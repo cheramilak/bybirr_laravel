@@ -1,18 +1,18 @@
 <div>
     <div class="flex-1 self-stretch max-md:pt-6">
-        <flux:heading>{{  'Kyc' }}</flux:heading>
+        <flux:heading>{{ 'Kyc' }}</flux:heading>
         <flux:subheading>{{ 'Kyc Detail' }}</flux:subheading>
         <div class="flex mt-2">
             <div class="w-100 max-w">
             </div>
-             <flux:spacer />
+            <flux:spacer />
         </div>
         <div class="mt-5 w-full max-w">
             <div class="mt-3 relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    
+
                     <tbody>
-                       <tr>
+                        <tr>
                             <td class="px-6 py-4">First Name</td>
                             <td class="px-6 py-4">{{ $kyc->fName }}</td>
                         </tr>
@@ -59,19 +59,22 @@
                         <tr>
                             <td class="px-6 py-4">Photo</td>
                             <td class="px-6 py-4">
-                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->photo) }}" alt="Photo" class="w-16 h-16 object-cover rounded">
+                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->photo) }}"
+                                    alt="Photo" class="w-16 h-16 object-cover rounded">
                             </td>
                         </tr>
                         <tr>
                             <td class="px-6 py-4">ID Front</td>
                             <td class="px-6 py-4">
-                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->idFront) }}" alt="ID Front" class="w-16 h-16 object-cover rounded">
+                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->idFront) }}"
+                                    alt="ID Front" class="w-16 h-16 object-cover rounded">
                             </td>
                         </tr>
                         <tr>
                             <td class="px-6 py-4">ID Back</td>
                             <td class="px-6 py-4">
-                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->idBack) }}" alt="ID Back" class="w-16 h-16 object-cover rounded">
+                                <img height="80" width="80" src="{{ asset('storage/' . $kyc->idBack) }}"
+                                    alt="ID Back" class="w-16 h-16 object-cover rounded">
                             </td>
                         </tr>
                         <tr>
@@ -85,20 +88,56 @@
                         <tr>
                             <td class="px-6 py-4">Status</td>
                             <td class="px-6 py-4">
-                                @if($kyc->status == 'Active')
+                                @if ($kyc->status == 'Approved')
                                     <flux:badge color="lime">Approve</flux:badge>
                                 @endif
-                                @if($kyc->status == 'Pending')
+                                @if ($kyc->status == 'Pending')
                                     <flux:badge color="zinc">Pending</flux:badge>
                                 @endif
-                                @if($kyc->status == 'Failed')
+                                @if ($kyc->status == 'Failed')
                                     <flux:badge color="red">Failed</flux:badge>
                                 @endif
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Created At</td>
+                            <td class="px-6 py-4">{{ $kyc->created_at->format('d M, y') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4">Actions</td>
+                            <td class="px-6 py-4">
+                                @if ($kyc->status == 'Pending')
+                                    <flux:button wire:click="submitKyc" variant="primary" color="green">Submit kyc
+                                    </flux:button>
+                                    <flux:modal.trigger name="modal-reject">
+                                        <flux:button variant="danger">Reject
+                                        </flux:button>
+                                    </flux:modal.trigger>
+                                @endif
+                                {{-- @if ($kyc->status == 'Failed')
+                                    <flux:button variant="danger">Delete</flux:button>
+                                @endif --}}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <flux:modal name="modal-reject" class="md:w-96">
+                <div class="space-y-6">
+                    <div>
+                        <flux:heading size="lg">KYC Rejection Form</flux:heading>
+                    </div>
+
+                    <form wire:submit='rejectKyc'>
+                        <flux:input label="Reason" wire:model='reason' />
+                        <div class="flex mt-2">
+                            <flux:spacer />
+                            <flux:button type="submit" variant="primary">Save changes</flux:button>
+                        </div>
+                    </form>
+                </div>
+            </flux:modal>
         </div>
     </div>
 </div>

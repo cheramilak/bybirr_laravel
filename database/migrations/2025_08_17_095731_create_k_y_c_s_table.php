@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('idBack');
             $table->string('email')->unique();
             $table->date('bod');
-            $table->enum('status', ['Pending', 'Approved', 'Failed'])->default('Pending');
+            $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('Pending');
             $table->unsignedBigInteger('user_id');
             $table->string('reason')->nullable();
             $table->uuid('uuid')->unique();

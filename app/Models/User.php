@@ -67,4 +67,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(KYC::class, 'user_id');
     }
+
+    public function cards()
+    {
+        return $this->hasMany(VirtualCard::class, 'user_id');
+    }
 }
