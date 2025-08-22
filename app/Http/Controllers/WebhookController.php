@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CardOrder;
+use App\Models\CardTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -22,7 +23,9 @@ class WebhookController extends Controller
             case 'virtualcard.created.success':
                 $this->handleCardCreationSucceeded($payload['data']);
                 break;
-
+            case 'virtualcard.topup.success':
+                $this->topupCard($payload['data']);
+                break;
                 // you can handle other events here
         }
 
@@ -54,5 +57,20 @@ class WebhookController extends Controller
             $ordercard->cardId = $data['id'];
             $ordercard->save();
         }
+    }
+
+    protected function topupCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->currency = $data['currency'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['transactionId'] ?? null;
+        $tran->reason = 'Top-up card';
+        $tran->save();
     }
 }
