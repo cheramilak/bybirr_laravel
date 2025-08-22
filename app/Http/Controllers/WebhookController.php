@@ -23,8 +23,30 @@ class WebhookController extends Controller
             case 'virtualcard.created.success':
                 $this->handleCardCreationSucceeded($payload['data']);
                 break;
+
             case 'virtualcard.topup.success':
                 $this->topupCard($payload['data']);
+                break;
+            case 'virtualcard.withdrawal.success':
+                $this->withdrawalCard($payload['data']);
+                break;
+            case 'virtualcard.withdrawal.failed':
+                $this->failedWithdrawalCard($payload['data']);
+                break;
+            case 'virtualcard.topup.success':
+                $this->topupCard($payload['data']);
+                break;
+            case 'virtualcard.transaction.debit':
+                $this->debitCard($payload['data']);
+                break;
+            case 'virtualcard.transaction.reversed':
+                $this->reversedCard($payload['data']);
+                break;
+            case 'virtualcard.transaction.declined':
+                $this->declinedCard($payload['data']);
+                break;
+            case 'virtualcard.transaction.authorization.failed':
+                $this->authorizationFailedCard($payload['data']);
                 break;
                 // you can handle other events here
         }
@@ -63,14 +85,97 @@ class WebhookController extends Controller
     {
         $tran = new CardTransaction();
         $tran->amount = $data['amount'];
-        $tran->currency = $data['currency'];
         $tran->status = $data['status'];
         $tran->reference = $data['reference'];
         $tran->cardId = $data['cardId'];
         $tran->companyId = $data['companyId'];
         $tran->narrative = $data['narrative'] ?? null;
-        $tran->transactionId = $data['transactionId'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
         $tran->reason = 'Top-up card';
+        $tran->save();
+    }
+
+    protected function debitCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = 'Debit';
+        $tran->save();
+    }
+
+    protected function withdrawalCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = 'Withdrawal';
+        $tran->save();
+    }
+
+    protected function failedWithdrawalCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = 'Withdrawal';
+        $tran->save();
+    }
+
+    protected function reversedCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = 'Reversed';
+        $tran->save();
+    }
+
+    protected function declinedCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = $data['reason'] ?? null;
+        $tran->save();
+    }
+
+    protected function authorizationFailedCard(array $data)
+    {
+        $tran = new CardTransaction();
+        $tran->amount = $data['amount'];
+        $tran->status = $data['status'];
+        $tran->reference = $data['reference'];
+        $tran->cardId = $data['cardId'];
+        $tran->companyId = $data['companyId'];
+        $tran->narrative = $data['narrative'] ?? null;
+        $tran->transactionId = $data['id'] ?? null;
+        $tran->reason = $data['reason'] ?? null;
         $tran->save();
     }
 }
