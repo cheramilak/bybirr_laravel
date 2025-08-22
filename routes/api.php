@@ -12,7 +12,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::controller(WebhookController::class)->group(function () {
-    Route::get('webhookHandler', 'handleWebhook');
+    Route::post('webhookHandler', 'handleWebhook');
 });
 
 Route::prefix('v1/')->group(function () {

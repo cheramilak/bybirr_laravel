@@ -166,7 +166,7 @@
                         </flux:button>
                     </div>
                 @endif
-                @if ($cardOrder->status != 'Success')
+                @if ($cardOrder->status == 'Success')
                     <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <flux:button wire:click='ComplateCard' variant="primary">Submit Card data
                         </flux:button>
