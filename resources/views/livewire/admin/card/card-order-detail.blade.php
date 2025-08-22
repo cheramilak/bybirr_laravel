@@ -160,7 +160,7 @@
                     </flux:badge>
                 </div>
 
-                @if ($cardOrder->status != 'Pending')
+                @if ($cardOrder->status == 'Pending')
                     <div class="col-span-6 sm:col-span-6 md:col-span-4 lg:col-span-4">
                         <flux:button wire:click='create' variant="primary">Create Card
                         </flux:button>
