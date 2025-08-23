@@ -22,6 +22,7 @@ Route::prefix('v1/')->group(function () {
         route::post('signup', 'registor');
         route::post('login', 'login');
         route::get('getUserProfile', 'getUserProfile')->middleware('auth:sanctum');
+        route::get('emailVerification', 'emailVerification')->middleware('auth:sanctum');
         route::post('logout', 'logout')->middleware('auth:sanctum');
     });
 

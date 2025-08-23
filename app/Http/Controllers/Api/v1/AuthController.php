@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Models\User;
+use App\Mail\EmailOTP;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Otp;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -40,7 +43,6 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token->plainTextToken,
         ];
-
         return $this->success($data, 'Success');
     }
 
@@ -63,22 +65,18 @@ class AuthController extends Controller
         }
 
         $user = User::with(['kyc'])->where('email', $request->email)->first();
-        if (!$user) {
-            return $this->validationError('Invalid email address');
-        }
-        if (!Hash::check($request->password, $user->passowrd)) {
-            return $this->validationError('Wrong password');
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return $this->validationError('Invalid email or password');
         }
         if ($user->status == 'Block') {
             return $this->validationError('this account is blocked');
         }
-        $token = $user->createToken(User::USER_TOKEN);
 
+        $token = $user->createToken(User::USER_TOKEN);
         $data = [
             'user' => $user,
             'token' => $token->plainTextToken,
         ];
-
         return $this->success($data, 'Success');
     }
 
@@ -89,5 +87,137 @@ class AuthController extends Controller
             'user' => $user
         ];
         return $this->success($data);
+    }
+
+    public function emailVerification()
+    {
+
+        $user = Auth::user();
+
+        $code = rand(100000, 999999);
+
+        // Save OTP to database
+        Otp::updateOrCreate([
+            'email' => $user->email
+        ], [
+            'code' => $code
+        ]);
+
+        // Send OTP email
+        Mail::to($user->email)->send(new EmailOTP($user->name, $code));
+        return $this->success(null, 'Verification code sent to your email');
+    }
+
+    public function checkOtp(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'code' => 'required|string',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->validationError($validation->errors()->first());
+        }
+
+        $user = Auth::user();
+        $otp = $user->otp;
+
+        if (!$otp || $otp->code !== $request->code) {
+            return $this->validationError('Invalid verification code');
+        }
+
+        // Mark email as verified
+        $user->email_verified_at = now();
+        $user->save();
+
+        // Delete OTP after successful verification
+        $otp->delete();
+        $user = User::with(['kyc', 'cards'])->find(Auth::user()->id);
+        $data = [
+            'user' => $user
+        ];
+        return $this->success($data, 'Email verified successfully');
+    }
+
+    public function forgetPassword(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->validationError($validation->errors()->first());
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $token = Str::random(60);
+        $code = rand(100000, 999999);
+
+        // Save password reset token to database
+        Otp::updateOrCreate([
+            'email' => $user->email
+        ], [
+            'code' => $code,
+            'token' => $token
+        ]);
+
+        $data = [
+            'token' => $token
+        ];
+
+        // Send password reset email
+        Mail::to($user->email)->send(new EmailOTP($user->name, $code));
+        return $this->success($data, 'Password reset link sent to your email');
+    }
+
+    public function checkPasswordResetOtp(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'token' => 'required|string',
+            'code' => 'required|string',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->validationError($validation->errors()->first());
+        }
+
+        $otp = Otp::where('token', $request->token)->first();
+
+        if (!$otp) {
+            return $this->validationError('Invalid password reset code');
+        }
+        if ($otp->code !== $request->code) {
+            return $this->validationError('Invalid password reset code');
+        }
+
+        $user = User::where('email', $otp->email)->first();
+        $token = $user->createToken(User::USER_TOKEN);
+        $otp->delete();
+
+        $data = [
+            'user' => $user,
+            'token' => $token->plainTextToken,
+        ];
+        return $this->success($data);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'password' => 'required|string|min:6',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->validationError($validation->errors()->first());
+        }
+
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        $user = User::with(['kyc', 'cards'])->find(Auth::user()->id);
+        $data = [
+            'user' => $user
+        ];
+        return $this->success($data, 'Password reset successfully');
     }
 }

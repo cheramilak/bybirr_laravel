@@ -37,4 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
+Route::get('/otp', function () {
+    return view('emails.otp');
+})->name('otp');
+
 require __DIR__ . '/auth.php';
