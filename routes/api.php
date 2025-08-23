@@ -23,6 +23,11 @@ Route::prefix('v1/')->group(function () {
         route::post('login', 'login');
         route::get('getUserProfile', 'getUserProfile')->middleware('auth:sanctum');
         route::get('emailVerification', 'emailVerification')->middleware('auth:sanctum');
+        route::post('checkOtp', 'checkOtp')->middleware('auth:sanctum');
+        route::post('forgetPassword', 'forgetPassword');
+        route::post('checkPasswordResetOtp', 'checkPasswordResetOtp');
+        route::post('resetPassword', 'resetPassword')->middleware('auth:sanctum');
+        route::post('resendPasswordResetOtp', 'resendPasswordResetOtp');
         route::post('logout', 'logout')->middleware('auth:sanctum');
     });
 

@@ -64,7 +64,7 @@ class AuthController extends Controller
             return $this->validationError($validation->errors()->first());
         }
 
-        $user = User::with(['kyc'])->where('email', $request->email)->first();
+        $user = User::with(['kyc', 'cards'])->where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return $this->validationError('Invalid email or password');
         }
@@ -100,12 +100,13 @@ class AuthController extends Controller
         Otp::updateOrCreate([
             'email' => $user->email
         ], [
-            'code' => $code
+            'code' => $code,
+
         ]);
 
         // Send OTP email
         Mail::to($user->email)->send(new EmailOTP($user->name, $code));
-        return $this->success(null, 'Verification code sent to your email');
+        return $this->success($code, 'Verification code sent to your email');
     }
 
     public function checkOtp(Request $request)
@@ -119,7 +120,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $otp = $user->otp;
+        $otp = Otp::where('email', $user->email)->first();
 
         if (!$otp || $otp->code !== $request->code) {
             return $this->validationError('Invalid verification code');
@@ -131,11 +132,8 @@ class AuthController extends Controller
 
         // Delete OTP after successful verification
         $otp->delete();
-        $user = User::with(['kyc', 'cards'])->find(Auth::user()->id);
-        $data = [
-            'user' => $user
-        ];
-        return $this->success($data, 'Email verified successfully');
+       
+        return $this->success(null, 'Email verified successfully');
     }
 
     public function forgetPassword(Request $request)
@@ -161,7 +159,8 @@ class AuthController extends Controller
         ]);
 
         $data = [
-            'token' => $token
+            'token' => $token,
+            'code' => $code,
         ];
 
         // Send password reset email
@@ -189,7 +188,7 @@ class AuthController extends Controller
             return $this->validationError('Invalid password reset code');
         }
 
-        $user = User::where('email', $otp->email)->first();
+        $user = User::with(['kyc', 'cards'])->where('email', $otp->email)->first();
         $token = $user->createToken(User::USER_TOKEN);
         $otp->delete();
 
@@ -198,6 +197,26 @@ class AuthController extends Controller
             'token' => $token->plainTextToken,
         ];
         return $this->success($data);
+    }
+
+    public function resendPasswordResetOtp(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'token' => 'required|string|exists:otps,token',
+        ]);
+
+        if ($validation->fails()) {
+            return $this->validationError($validation->errors()->first());
+        }
+
+        $otp = Otp::where('token', $request->token)->first();
+        $otp->code = rand(100000, 999999);
+        $otp->save();
+        Mail::to($user->email)->send(new EmailOTP($user->name, $code));
+        $data = [
+            'code' => $otp->code
+        ];
+        return $this->success($data, 'Password reset code sent to your email');
     }
 
     public function resetPassword(Request $request)
@@ -214,10 +233,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        $user = User::with(['kyc', 'cards'])->find(Auth::user()->id);
-        $data = [
-            'user' => $user
-        ];
-        return $this->success($data, 'Password reset successfully');
+       
+        return $this->success(null, 'Password reset successfully');
     }
 }
