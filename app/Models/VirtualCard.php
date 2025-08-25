@@ -24,6 +24,10 @@ class VirtualCard extends Model
         'last4'
     ];
 
+    protected $casts = [
+        'billing_address' => 'array',
+    ];
+
     // Relationships
     public function user()
     {

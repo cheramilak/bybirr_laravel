@@ -13,6 +13,8 @@ use App\Models\TransactionRate;
 use App\Models\VirtualCard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+
 
 class CardController extends Controller
 {
@@ -75,5 +77,151 @@ class CardController extends Controller
             'cards' => $cards
         ];
         return $this->success($data);
+    }
+
+    public function getCardDetails($cardId)
+    {
+        $card = VirtualCard::where('cardId', $cardId)->where('user_id', Auth::user()->id)->first();
+        if (!$card) {
+            return $this->error('Card not found');
+        }
+        $data = $this->fatchCardDetails($card->cardId);
+        if($data['status'] == false){
+            return $this->error($data,'Something went wrong, please try again later');
+        }
+        
+        return $this->success($data['data']);
+    }
+
+    public function freezCard($cardId)
+    {
+        $card = VirtualCard::where('cardId', $cardId)->where('user_id', Auth::user()->id)->first();
+        if (!$card) {
+            return $this->error('Card not found');
+        }
+        $data = $this->cardFreez($card->cardId);
+        if($data['status'] == false){
+            return $this->error('Something went wrong, please try again later');
+        }
+        $card->status = 'frozen';
+        $card->save();
+        
+        return $this->success($data['data']);
+    }
+
+    public function unFreezCard($cardId)
+    {
+        $card = VirtualCard::where('cardId', $cardId)->where('user_id', Auth::user()->id)->first();
+        if (!$card) {
+            return $this->error('Card not found');
+        }
+        $data = $this->cardUnFreez($card->cardId);
+        if($data['status'] == false){
+            return $this->error($data,'Something went wrong, please try again later');
+        }
+        $card->status = 'active';
+        $card->save();
+        
+        return $this->success($data['data']);
+    }
+
+
+
+
+
+    public function fatchCardDetails($cardId)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('bitNob.test.api_secret'),
+            'content-type: application/json',
+            'accept: application/json'
+        ])->get('https://sandboxapi.bitnob.co/api/v1/virtualcards/cards/'.$cardId,);
+
+        if ($response->successful()) {
+            $result = $response->json();  // Associative array
+            
+            return $result;
+        } else {
+            $data = [
+                'status' => false,
+            ];
+            return $data;
+        }
+    }
+
+    public function getCardTransactions($cardId)
+    {
+        $card = VirtualCard::where('cardId', $cardId)->where('user_id', Auth::user()->id)->first();
+        if (!$card) {
+            return $this->error('Card not found');
+        }
+        $data = $this->fatchCardTransactions($card->cardId);
+        if($data['status'] == false){
+            return $this->error('Something went wrong, please try again later');
+        }
+        return $this->success($data['data']);
+    }
+
+    protected function fatchCardTransactions($cardId)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('bitNob.test.api_secret'),
+            'content-type: application/json',
+            'accept: application/json'
+        ])->get('https://sandboxapi.bitnob.co/api/v1/virtualcards/cards/'.$cardId.'/transactions',);
+        if ($response->successful()) {
+            $result = $response->json();  // Associative array
+            return $result;
+        } else {
+
+           $data = [
+                'status' => false,
+            ];
+            return $data;
+        }
+    }
+
+    
+
+    protected function cardFreez($cardId)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('bitNob.test.api_secret'),
+            'content-type: application/json',
+            'accept: application/json'
+        ])->post('https://sandboxapi.bitnob.co/api/v1/virtualcards/freeze',[
+        'cardId' => $cardId
+        ]);
+        if ($response->successful()) {
+            $result = $response->json();  // Associative array
+            return $result;
+        } else {
+
+           $data = [
+                'status' => false,
+            ];
+            return $data;
+        }
+    }
+
+    protected function cardUnFreez($cardId)
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('bitNob.test.api_secret'),
+            'content-type: application/json',
+            'accept: application/json'
+        ])->post('https://sandboxapi.bitnob.co/api/v1/virtualcards/unfreeze',[
+        'cardId' => $cardId
+        ]);
+        if ($response->successful()) {
+            $result = $response->json();  // Associative array
+            return $result;
+        } else {
+
+           $data = [
+                'status' => false,
+            ];
+            return $data;
+        }
     }
 }

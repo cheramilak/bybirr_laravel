@@ -42,6 +42,20 @@ Route::prefix('v1/')->group(function () {
             route::post('order-card', 'ordercard');
             route::get('getCurrentRate', 'getCurrentRate');
             route::get('getCards', 'getCards');
+            route::get('getCardDetails/{cardId}', 'getCardDetails');
+            route::get('getCardTransactions/{uuid}', 'getCardTransactions');
+            route::post('freezCard/{cardId}','freezCard');
+            route::post('unFreezCard/{cardId}','unFreezCard');
         });
     });
+
+    // Route::controller(CardController::class)->group(function () {
+    //     route::post('order-card', 'ordercard');
+    //     route::get('getCurrentRate', 'getCurrentRate');
+    //     route::get('getCards', 'getCards');
+    //     route::get('fatchCardDetails/{cardId}', 'fatchCardDetails');
+    //     route::get('getCardTransactions/{uuid}', 'getCardTransactions');
+    // });
 });
+
+

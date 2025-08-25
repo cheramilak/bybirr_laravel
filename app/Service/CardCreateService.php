@@ -72,14 +72,14 @@ class CardCreateService
         }
     }
 
-    function storeVirtualCard($cardOrder)
+    function storeVirtualCard()
     {
         $key = config('bitNob.test.api_secret');
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . $key,
             'content-type: application/json',
             'accept: application/json'
-        ])->get('https://sandboxapi.bitnob.co/api/v1/virtualcards/cards/' . $cardOrder->cardId);
+        ])->get('https://sandboxapi.bitnob.co/api/v1/virtualcards/cards/5a1e8f3a-686b-44bf-8452-d92640e172bc');
 
         if ($response->successful()) {
             $result = $response->json();  // Associative array
@@ -88,7 +88,7 @@ class CardCreateService
             $data = $result['data'];
 
             VirtualCard::create([
-                'user_id'        => $cardOrder->user_id,
+                'user_id'        => 1,
                 'card_number'    => $data['cardNumber'],
                 'cardholder_name' => $data['cardName'],
                 'valid'          => $data['valid'], // already in MM/YYYY

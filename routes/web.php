@@ -1,14 +1,15 @@
 <?php
 
+use Livewire\Volt\Volt;
+use App\Livewire\Admin\KycDetail;
+use App\Service\CardCreateService;
+use App\Livewire\Admin\KycManagment;
 use App\Livewire\Admin\BankManagment;
+use App\Livewire\Admin\UserManagment;
+use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Card\CardManagment;
 use App\Livewire\Admin\Card\CardOrderDetail;
 use App\Livewire\Admin\Card\CardOrderManagment;
-use App\Livewire\Admin\KycDetail;
-use App\Livewire\Admin\KycManagment;
-use App\Livewire\Admin\UserManagment;
-use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,8 +38,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-Route::get('/otp', function () {
-    return view('emails.otp');
+Route::get('/test', function () {
+    return (new CardCreateService())->storeVirtualCard();
 })->name('otp');
 
 require __DIR__ . '/auth.php';
